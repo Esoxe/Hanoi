@@ -426,6 +426,7 @@ def dernierCoup(coups) :
             tour_arrivee=i
         elif len(dernier_plateau[i])<len(av_dernier_plateau[i]):
             tour_depart=i
+    print(tour_depart,tour_arrivee)
     return tour_depart,tour_arrivee
 
 
@@ -433,7 +434,7 @@ def annulerDernierCoup(coups,plateau):
     tour_depart,tour_arrivee=dernierCoup(coups)
     effaceDisque(coups[len(coups)-1][tour_arrivee][-1],coups[len(coups)-1],n)
     del coups[len(coups)-1]
-    dessineDisque(plateau[tour_depart][-1],coups[len(coups)-1],n)
+    dessineDisque(coups[len(coups)-1][tour_depart][-1],coups[len(coups)-1],n)
     dessineConfig(coups[len(coups)-1],n)
     return copy.deepcopy(coups[len(coups)-1])
    
@@ -441,8 +442,6 @@ def annulerDernierCoup(coups,plateau):
 
 
 #Partie E : comparaison des scores et temps de jeu
-
-
 
 def sauvScore(nom,n,nb_coup) :
     score[len(score)+1]=[nom,n,nb_coup]
