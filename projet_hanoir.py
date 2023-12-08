@@ -610,9 +610,11 @@ def afficheScore(score,n=0):
                 for i in range(0,3) :
                     min=list(score_copy.keys())[0]
                     for partie in score_copy:
+                        print(partie)
                         if score_copy[partie][2]<score_copy[min][2] :
-                            min=score_copy[partie][2]
+                            min=partie
                     meilleur_score_3[i]=score_copy[min]
+                    del score_copy[min]
                 affichage_ordre_croissant(meilleur_score_3)
             else :
                 affichage_ordre_croissant(score_copy)    
@@ -659,7 +661,7 @@ def efface_text(x,y):
 
 
 rejouer="oui"
-score={}
+score={1:['Florian',3,18],2:['Daniel',4,15],3:['Thomas',3,20],4:['Akram',3,15]}
 while rejouer=="oui":  # cette boucle while permet de recommencer une partie
    
     score_copy=copy.deepcopy(score)
