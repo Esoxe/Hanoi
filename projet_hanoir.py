@@ -442,8 +442,6 @@ def annulerDernierCoup(coups,plateau):
 
 #Partie E : comparaison des scores et temps de jeu
 
-def affiche_nb_coup():
-
 
 
 def sauvScore(nom,n,nb_coup) :
@@ -455,7 +453,7 @@ def affichage_ordre_croissant(score_copy) :
     for i in range(len(score_copy)) :
             min=list(score_copy.keys())[0]
             for partie in score_copy :
-                if score[partie][2]<score[min][2]:
+                if score_copy[partie][2]<score_copy[min][2]:
                     min=partie
             tl.goto(-250,-180-space)
             tl.write(score_copy[min][0]+"                  "+str(score_copy[min][1])+'                              ' +str(score_copy[min][2]), font=('arial', 12))    
@@ -463,27 +461,30 @@ def affichage_ordre_croissant(score_copy) :
             space+=50    
  
 def afficheScore(score,n=0):
-    score_copy={}
-    meilleur_score_3={}
-    space=50
-    tl.up()
-    tl.goto(-250,-180)
-    tl.write('NOM        NOMBRE DE DISQUE    NOMBRE DE COUP ', font=('arial', 10))
-    if n==0:
-        for i in range(1,4) :
-            min=score_copy[1]
-            for score in score_copy:
-                if score[2]>min :
-                    min=score[2]
-            
-
-        affichage_ordre_croissant(score_copy)
-    else :
-        for i in range(1,len(score)+1) :
-             if score_copy[i][1]!=n:
-                del score_copy[i]
-        affichage_ordre_croissant(score_copy)
-    tl.down()
+    if len(score)!=0 :
+        score_copy=copy.deepcopy(score)
+        meilleur_score_3={}
+        space=50
+        tl.up()
+        tl.goto(-250,-180)
+        tl.write('NOM        NOMBRE DE DISQUE    NOMBRE DE COUP ', font=('arial', 10))
+        if n==0:
+            if len(score)>3 :
+                for i in range(0,3) :
+                    min=list(score_copy.keys())[0]
+                    for partie in score_copy:
+                        if score_copy[partie][2]<score_copy[min][2] :
+                            min=score_copy[partie][2]
+                    meilleur_score_3[i]=score_copy[min]
+                affichage_ordre_croissant(meilleur_score_3)
+            else :
+                affichage_ordre_croissant(score_copy)    
+        else :
+            for i in range(1,len(score)+1) :
+                if score_copy[i][1]!=n:
+                    del score_copy[i]
+            affichage_ordre_croissant(score_copy)
+        tl.down()
 
 
 def efface_score():
@@ -511,7 +512,7 @@ def efface_score():
 
 
 rejouer="oui"
-score={1:['Florian',3,8],2:['Florian',3,12],3:['Florian',4,21]}
+score={}
 while rejouer=="oui":  # cette boucle while permet de recommencer une partie
    
     score_copy=copy.deepcopy(score)
@@ -550,3 +551,6 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
     tl.down()
     efface_score()
     rejouer=input("Veux tu rejouer(oui/non)?")
+
+afficheScore(score)
+tl.done()
