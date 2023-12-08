@@ -3,6 +3,8 @@ import copy
 import time
 
 
+
+
 def init(n) :
     plateau=[[],[],[]]
     i=n
@@ -14,8 +16,14 @@ def init(n) :
 
 
 
+
+
+
+
 def nbDisques(plateau,numtour):
     return len(plateau[numtour])
+
+
 
 
 def disqueSup(plateau,numtour):
@@ -23,6 +31,8 @@ def disqueSup(plateau,numtour):
         return plateau[numtour][len(plateau[numtour])-1]
     else :
         return -1
+
+
 
 
 def posdisque(plateau,numdisque):
@@ -36,6 +46,8 @@ def posdisque(plateau,numdisque):
         i+=1
 
 
+
+
 def verifDepl(plateau,nt1,nt2) :
     if disqueSup(plateau,nt1) == -1 :
         return False
@@ -44,6 +56,8 @@ def verifDepl(plateau,nt1,nt2) :
     else :
         return False
        
+
+
 
 
 def verifVictoire(plateau,n) :
@@ -68,9 +82,27 @@ def verifVictoire(plateau,n) :
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # 3 PARTIE B : graphisme avec turtle
 import turtle as tl
 # 1)
+
+
+
+
 
 
 
@@ -92,6 +124,8 @@ def laBase_reset(n):
     tl.right(180)
     tl.forward(20)
     tl.right(90)
+
+
 
 
 def poteaux_reset(n):
@@ -122,6 +156,12 @@ def poteaux_reset(n):
 
 
 
+
+
+
+
+
+
 def laBase(n):
     tl.fillcolor('brown')
     tl.begin_fill()
@@ -139,6 +179,10 @@ def laBase(n):
     tl.right(180)
     tl.forward(20)
     tl.right(90)
+
+
+
+
 
 
 
@@ -167,6 +211,8 @@ def poteaux(n):
     tl.end_fill()
 
 
+
+
 def dessinePlateau(n):
     tl.bgcolor("yellow")
     tl.up()
@@ -187,7 +233,15 @@ def dessinePlateau(n):
 
 
 
+
+
+
+
 # dessinePlateau(3)
+
+
+
+
 
 
 
@@ -195,7 +249,11 @@ def dessinePlateau(n):
 # 2)
 
 
+
+
 def place(nd,plateau):
+
+
 
 
     i=0
@@ -215,6 +273,8 @@ def place(nd,plateau):
         y+=1
 
 
+
+
     return somme,i+1
    
 
@@ -231,8 +291,26 @@ def place(nd,plateau):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def dessineDisque(nd,plateau,n):
    
+
+
+
+
 
 
 
@@ -260,8 +338,14 @@ def dessineDisque(nd,plateau,n):
 
 
 
+
+
+
+
 # 3)
 def effaceDisque(nd, plateau, n):
+
+
 
 
     tl.color('yellow')
@@ -297,7 +381,21 @@ def effaceDisque(nd, plateau, n):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 # 4)
+
+
 
 
 def dessineConfig(plateau, n):
@@ -306,6 +404,14 @@ def dessineConfig(plateau, n):
     while nd>=1:                     # on dessine les disque dans l'ordre décroissant (pour donner un effet réel)
         dessineDisque(nd,plateau,n)
         nd-=1
+
+
+
+
+
+
+
+
 
 
 
@@ -328,7 +434,15 @@ def effaceTout(plateau, n):
 
 
 
+
+
+
+
+
+
 #Partie C : interactions avec le joueur
+
+
 
 
 #1)
@@ -374,6 +488,10 @@ def lireCoords(plateau):
 
 
 
+
+
+
+
 def jouerUnCoup(plateau,n):
     tour_depart,tour_arrivee=lireCoords(plateau)
     if tour_depart==-1 :
@@ -385,6 +503,8 @@ def jouerUnCoup(plateau,n):
     tl.speed(1000000)
     dessineConfig(plateau,n)
     return 0
+
+
 
 
 def boucleJeu(plateau,n) :
@@ -413,7 +533,15 @@ def boucleJeu(plateau,n) :
 
 
 
+
+
+
+
+
+
 # Partie D : annulation de coups
+
+
 
 
 def dernierCoup(coups) :
@@ -426,8 +554,9 @@ def dernierCoup(coups) :
             tour_arrivee=i
         elif len(dernier_plateau[i])<len(av_dernier_plateau[i]):
             tour_depart=i
-    print(tour_depart,tour_arrivee)
     return tour_depart,tour_arrivee
+
+
 
 
 def annulerDernierCoup(coups,plateau):
@@ -441,10 +570,19 @@ def annulerDernierCoup(coups,plateau):
    
 
 
+
+
 #Partie E : comparaison des scores et temps de jeu
+
+
+
+
+
 
 def sauvScore(nom,n,nb_coup) :
     score[len(score)+1]=[nom,n,nb_coup]
+
+
 
 
 def affichage_ordre_croissant(score_copy) :
@@ -455,7 +593,7 @@ def affichage_ordre_croissant(score_copy) :
                 if score_copy[partie][2]<score_copy[min][2]:
                     min=partie
             tl.goto(-250,-180-space)
-            tl.write(score_copy[min][0]+"                  "+str(score_copy[min][1])+'                              ' +str(score_copy[min][2]), font=('arial', 12))    
+            tl.write(score_copy[min][0]+"                  "+str(score_copy[min][1])+'                              ' +str(score_copy[min][2]), font=('arial black', 12))    
             del score_copy[min]
             space+=50    
  
@@ -466,7 +604,7 @@ def afficheScore(score,n=0):
         space=50
         tl.up()
         tl.goto(-250,-180)
-        tl.write('NOM        NOMBRE DE DISQUE    NOMBRE DE COUP ', font=('arial', 10))
+        tl.write('NOM        NOMBRE DE DISQUE    NOMBRE DE COUP ', font=('arial black', 10))
         if n==0:
             if len(score)>3 :
                 for i in range(0,3) :
@@ -486,9 +624,11 @@ def afficheScore(score,n=0):
         tl.down()
 
 
-def efface_score():
+
+
+def efface_text(x,y):
     tl.up()
-    tl.goto(-250,-160)
+    tl.goto(x,y)
     tl.down()
     tl.color("yellow")
     tl.fillcolor("yellow")
@@ -505,7 +645,15 @@ def efface_score():
 
 
 
+
+
+
+
 #Programme principal
+
+
+
+
 
 
 
@@ -529,13 +677,15 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
         print("Partie abandonne apres",coup,"coups")
         print("Au revoir")
     if etat=="Victoire" :
-        efface_score()
+        efface_text(-250,-160)
         print("Partie gagnee apres",coup-1,"coup")
         nom=input("Quelle est votre nom ?")
         sauvScore(nom,n,coup)
         afficheScore(score)
     if etat=="defaite" :
         print("Partie perdu apres",coup,"coup",coup,"etant le maximum de coup possible")
+
+
 
 
    
@@ -546,10 +696,21 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
     poteaux_reset(n)
     tl.color("black")
     tl.up()
-    tl.goto(-10000,0)
+    tl.goto(-10000,-80)
     tl.down()
-    efface_score()
-    rejouer=input("Veux tu rejouer(oui/non)?")
+    efface_text(-250,-160)
+    tl.up()
+    tl.goto(-150,0)
+    tl.down()
+    tl.write('Veux tu rejouer ?', font=('arial black', 25))
 
+
+    rejouer=input("Veux tu rejouer(oui/non)?")
+    efface_text(-160,50)
+
+
+dessineConfig([[1,2,3]], 3)
 afficheScore(score)
 tl.done()
+
+
