@@ -18,8 +18,6 @@ def init(n) :
 
 
 
-
-
 def nbDisques(plateau,numtour):
     return len(plateau[numtour])
 
@@ -72,30 +70,6 @@ def verifVictoire(plateau,n) :
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # 3 PARTIE B : graphisme avec turtle
 import turtle as tl
 # 1)
@@ -128,6 +102,10 @@ def laBase_reset(n):
 
 
 
+
+
+
+
 def poteaux_reset(n):
     tl.fillcolor('yellow')
     tl.begin_fill()
@@ -154,14 +132,6 @@ def poteaux_reset(n):
 
 
 
-
-
-
-
-
-
-
-
 def laBase(n):
     tl.fillcolor('brown')
     tl.begin_fill()
@@ -179,10 +149,6 @@ def laBase(n):
     tl.right(180)
     tl.forward(20)
     tl.right(90)
-
-
-
-
 
 
 
@@ -213,6 +179,8 @@ def poteaux(n):
 
 
 
+
+
 def dessinePlateau(n):
     tl.bgcolor("yellow")
     tl.up()
@@ -235,15 +203,7 @@ def dessinePlateau(n):
 
 
 
-
-
 # dessinePlateau(3)
-
-
-
-
-
-
 
 
 # 2)
@@ -252,10 +212,6 @@ def dessinePlateau(n):
 
 
 def place(nd,plateau):
-
-
-
-
     i=0
     tr=0
    
@@ -273,44 +229,11 @@ def place(nd,plateau):
         y+=1
 
 
-
-
     return somme,i+1
    
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def dessineDisque(nd,plateau,n):
-   
-
-
-
-
 
 
 
@@ -340,12 +263,8 @@ def dessineDisque(nd,plateau,n):
 
 
 
-
-
 # 3)
 def effaceDisque(nd, plateau, n):
-
-
 
 
     tl.color('yellow')
@@ -375,24 +294,6 @@ def effaceDisque(nd, plateau, n):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # 4)
 
 
@@ -410,16 +311,6 @@ def dessineConfig(plateau, n):
 
 
 
-
-
-
-
-
-
-
-
-
-
 # 5)
 def effaceTout(plateau, n):
     nd=1
@@ -428,14 +319,6 @@ def effaceTout(plateau, n):
         nd+=1
    
     dessinePlateau(n)
-
-
-
-
-
-
-
-
 
 
 
@@ -490,8 +373,6 @@ def lireCoords(plateau):
 
 
 
-
-
 def jouerUnCoup(plateau,n):
     tour_depart,tour_arrivee=lireCoords(plateau)
     if tour_depart==-1 :
@@ -507,36 +388,40 @@ def jouerUnCoup(plateau,n):
 
 
 
+
+
+
+
 def boucleJeu(plateau,n) :
     nb_coup=1
     max=10
     print("Vous pouvez abandonner en choissisant une tour de départ egale a -1")
     while not(verifVictoire(plateau,n)) and nb_coup<=max :
         print("Coup Numero ",nb_coup)
+        tl.up()
+        tl.goto(300,-250)
+        tl.down()
+        tl.write(("Coup Numero ",nb_coup), font=('arial black', 10))
+
+
         i=jouerUnCoup(plateau,n)
         if i==-1 :
-            return nb_coup,"abandonne"
+            return nb_coup,"abandonne",plateau
         coups[nb_coup]=copy.deepcopy(plateau)
         nb_coup+=1
         annuler=input("Voulez vous annuler le dernier coup ? (oui/non) : ")
         if annuler=='oui':
                 plateau=annulerDernierCoup(coups,plateau)
                 nb_coup-=1
-    if not(verifVictoire(plateau,n)) :
-        return nb_coup,"defaite"
-    else :
-        return nb_coup,"Victoire"
+        efface_text(290,-230)
    
-
-
-
-
-
-
-
-
-
-
+    if not(verifVictoire(plateau,n)) :
+        return nb_coup,"defaite",plateau
+    else :
+        return nb_coup,"Victoire",plateau
+   
+   
+   
 
 
 # Partie D : annulation de coups
@@ -559,6 +444,10 @@ def dernierCoup(coups) :
 
 
 
+
+
+
+
 def annulerDernierCoup(coups,plateau):
     tour_depart,tour_arrivee=dernierCoup(coups)
     effaceDisque(coups[len(coups)-1][tour_arrivee][-1],coups[len(coups)-1],n)
@@ -566,7 +455,6 @@ def annulerDernierCoup(coups,plateau):
     dessineDisque(coups[len(coups)-1][tour_depart][-1],coups[len(coups)-1],n)
     dessineConfig(coups[len(coups)-1],n)
     return copy.deepcopy(coups[len(coups)-1])
-   
    
 
 
@@ -577,10 +465,12 @@ def annulerDernierCoup(coups,plateau):
 
 
 
-
-
 def sauvScore(nom,n,nb_coup) :
     score[len(score)+1]=[nom,n,nb_coup]
+
+
+
+
 
 
 
@@ -610,7 +500,6 @@ def afficheScore(score,n=0):
                 for i in range(0,3) :
                     min=list(score_copy.keys())[0]
                     for partie in score_copy:
-                        print(partie)
                         if score_copy[partie][2]<score_copy[min][2] :
                             min=partie
                     meilleur_score_3[i]=score_copy[min]
@@ -624,6 +513,8 @@ def afficheScore(score,n=0):
                     del score_copy[i]
             affichage_ordre_croissant(score_copy)
         tl.down()
+
+
 
 
 
@@ -649,19 +540,13 @@ def efface_text(x,y):
 
 
 
-
-
 #Programme principal
 
 
 
 
-
-
-
-
 rejouer="oui"
-score={1:['Florian',3,18],2:['Daniel',4,15],3:['Thomas',3,20],4:['Akram',3,15]}
+score={}
 while rejouer=="oui":  # cette boucle while permet de recommencer une partie
    
     score_copy=copy.deepcopy(score)
@@ -674,7 +559,7 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
     afficheScore(score)
     coups[0]=copy.deepcopy(plateau)
     dessineConfig(plateau,n)
-    coup,etat=boucleJeu(plateau,n)
+    coup,etat,p=boucleJeu(plateau,n)
     if etat=="abandonne" :
         print("Partie abandonne apres",coup,"coups")
         print("Au revoir")
@@ -688,9 +573,7 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
         print("Partie perdu apres",coup,"coup",coup,"etant le maximum de coup possible")
 
 
-
-
-   
+    plateau=p
     time.sleep(4)
     effaceTout(plateau, n)  # effacer l'ensemble des disques et le plateau pour pouvoir recommencer une partie
     tl.color("yellow")
@@ -714,5 +597,3 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
 dessineConfig([[1,2,3]], 3)
 afficheScore(score)
 tl.done()
-
-
