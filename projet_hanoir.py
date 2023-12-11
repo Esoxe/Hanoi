@@ -1,7 +1,7 @@
 import keyboard as kb
 import copy
 import time
-
+import pickle
 
 
 
@@ -188,8 +188,8 @@ def dessinePlateau(n):
     tl.write('Les tours de Hanoi:', font=('arial black', 40))
     tl.goto(-460,370)
     tl.write('CAILLE Daniel, PERRET Florian ', font=('arial', 15))
-    tl.goto(-460,300)
-    tl.write('APPUYER SUR R POUR ANNULER LE DERNIER COUP',font=('arial', 15))
+    tl.goto(-460,350)
+    tl.write("Vous pouvez abandonner en choissisant une tour de départ egale a -1",font=('arial', 15))
     tl.down()
     tl.speed(1000000)
     tl.shapesize(0.1)
@@ -330,15 +330,15 @@ def effaceTout(plateau, n):
 
 #1)
 def lireCoords(plateau):
-    n_tour_depart=int(input("Numero de tour de départ ? : "))
+    n_tour_depart=int(tl.numinput("Numero de tour de départ ?","Entre 1 et 3"))
     test=False
     while not(test)  :
         if n_tour_depart ==-1:
-            sur=input("tu souhaite abandonner ?(oui/non) : ")
+            sur=tl.textinput("tu souhaite abandonner ?","(oui/non)")
             if sur== "oui" :
                 return -1,None
             else :
-                n_tour_depart=int(input("choissisez un numéro de tour de depart entre 1 et 3 : "))
+                n_tour_depart=int(tl.numinput("Numero de tour de départ ?","Entre 1 et 3"))
         elif 0<n_tour_depart<4 :
             if len(plateau[n_tour_depart-1])!=0:
                 for i in range(len(plateau)):
@@ -347,25 +347,25 @@ def lireCoords(plateau):
                            test=True
                 if test==False :
                     print("Aucun deplacement possible a partir de cette tour choissier en une autre")          
-                    n_tour_depart=int(input("choissisez un numéro de tour entre 1 et 3 : "))                                          
+                    n_tour_depart=int(tl.numinput("Numero de tour de départ ?","Entre 1 et 3"))                               
             else :
                 print("La tour numéro ",n_tour_depart,"est vide choissiser en une autre. ")
-                n_tour_depart=int(input("choissisez un numéro de tour entre 1 et 3 : "))
+                n_tour_depart=int(tl.numinput("Numero de tour de départ ?","Entre 1 et 3"))
         else :
-            n_tour_depart=int(input("choissisez un numéro de tour entre 1 et 3 : "))
+            n_tour_depart=int(tl.numinput("Numero de tour de départ ?","Entre 1 et 3"))
         if test==True :
             test2=False
-            n_tour_arrivee=int(input("Numero de la tour d'arrivee ? : "))
+            n_tour_arrivee=int(tl.numinput("Numero de la tour d'arrivee ? :","entre 1 et 3"))
             while not(test2)  :
                 if 0<n_tour_arrivee<4 :
                     test2=verifDepl(plateau,n_tour_depart-1,n_tour_arrivee-1)
                     if test2==False :
                         print("Deplacement impossible disque plus petit déja present sur cette tour")
                         test2==True
-                        n_tour_depart=int(input("choissisez un numéro de tour de depart entre 1 et 3 : "))
-                        n_tour_arrivee=int(input("choissisez un numéro de tour de d'arrivee entre 1 et 3 : "))
+                        n_tour_depart=int(tl.numinput("Numero de tour de départ ?","Entre 1 et 3"))
+                        n_tour_arrivee=int(tl.numinput("Numero de la tour d'arrivee ? :","entre 1 et 3"))
                 else :
-                 n_tour_arrivee=int(input("choissisez un numéro de tour d'arrivee entre 1 et 3 : "))
+                 n_tour_arrivee=int(tl.numinput("Numero de la tour d'arrivee ? :","entre 1 et 3"))
     return n_tour_depart,n_tour_arrivee
 
 
@@ -395,9 +395,7 @@ def jouerUnCoup(plateau,n):
 def boucleJeu(plateau,n) :
     nb_coup=1
     max=10
-    print("Vous pouvez abandonner en choissisant une tour de départ egale a -1")
     while not(verifVictoire(plateau,n)) and nb_coup<=max :
-        print("Coup Numero ",nb_coup)
         tl.up()
         tl.goto(300,-250)
         tl.down()
@@ -409,7 +407,7 @@ def boucleJeu(plateau,n) :
             return nb_coup,"abandonne",plateau
         coups[nb_coup]=copy.deepcopy(plateau)
         nb_coup+=1
-        annuler=input("Voulez vous annuler le dernier coup ? (oui/non) : ")
+        annuler=tl.textinput("Voulez vous annuler le dernier coup ?"," (oui/non) ")
         if annuler=='oui':
                 plateau=annulerDernierCoup(coups,plateau)
                 nb_coup-=1
@@ -535,30 +533,62 @@ def efface_text(x,y):
     tl.goto(-1000,-160)
     tl.down()
 
+def button(number,buttontxt,font=15,x=-700) :
+    tl.up()
+    tl.goto(x,200-number*60)
+    tl.down()
+    for i in range(2):
+        tl.fillcolor('brown')
+        tl.begin_fill()
+        tl.forward(200)
+        tl.left(90)
+        tl.forward(50)
+        tl.left(90)
+        tl.end_fill()
+    tl.up()
+    tl.goto(x+10,210-number*60)
+    tl.write(buttontxt,font=('arial black',font))
 
+def interface():
+    button(0,"ABANDONNER")
+    button(1,"ANNULER DERNIER COUP",10)
+    button(2,"SCORE")
+    button(2,"COUP SUIVANT",x=300)
 
-
+def buttonClick(x,y):
+    if -700<x<-500 and 200<y<250 :
+        print("abandonne")
+    if -700<x<-500 and 80<y<130 :
+        global scoreopen
+        if scoreopen :
+            efface_text(-250,-160)
+            scoreopen = False
+        else :
+            afficheScore(score)
+            scoreopen = True
 
 
 #Programme principal
 
-
-
-
+scoreopen=False
+tl.setup(1920,1080)
 rejouer="oui"
-score={}
+with open('score.txt','rb') as f1 :
+    score=pickle.load(f1)
+    tl.onscreenclick(buttonClick,1)
+    tl.listen()
 while rejouer=="oui":  # cette boucle while permet de recommencer une partie
    
     score_copy=copy.deepcopy(score)
     coups={}
-    n=int(input("nombre de disque souhaite ? : "))
+    n=int(tl.numinput("nombre de disque ?","nombre >0 "))
     while n<=0 :
-        n=n=int(input("nombre de disque souhaite ? : "))
+        n=int(tl.numinput("nombre de disque ?","nombre > 0 "))
     plateau=init(n)
     tl.speed(1000000)
-    afficheScore(score)
     coups[0]=copy.deepcopy(plateau)
     dessineConfig(plateau,n)
+    interface()
     coup,etat,p=boucleJeu(plateau,n)
     if etat=="abandonne" :
         print("Partie abandonne apres",coup,"coups")
@@ -566,7 +596,7 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
     if etat=="Victoire" :
         efface_text(-250,-160)
         print("Partie gagnee apres",coup-1,"coup")
-        nom=input("Quelle est votre nom ?")
+        nom=tl.textinput("Quelle est votre nom ?","nom")
         sauvScore(nom,n,coup)
         afficheScore(score)
     if etat=="defaite" :
@@ -590,10 +620,12 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
     tl.write('Veux tu rejouer ?', font=('arial black', 25))
 
 
-    rejouer=input("Veux tu rejouer(oui/non)?")
+    rejouer=tl.textinput("Veux tu rejouer ?","(oui/non)")
     efface_text(-160,50)
 
 
 dessineConfig([[1,2,3]], 3)
 afficheScore(score)
+with open('score.txt',"wb") as f1:
+    pickle.dump(score,f1)
 tl.done()
