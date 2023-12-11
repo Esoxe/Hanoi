@@ -192,8 +192,6 @@ def dessinePlateau(n):
     tl.write('Les tours de Hanoï', font=('arial black', 40))
     tl.goto(-460,370)
     tl.write('CAILLE Daniel, PERRET Florian ', font=('arial', 15))
-    tl.goto(-460,350)
-    tl.write("Vous pouvez abandonner en choissisant une tour de départ egale a -1",font=('arial', 15))
     tl.down()
     tl.speed(1000000)
     tl.shapesize(0.1)
@@ -396,12 +394,10 @@ def jouerUnCoup(plateau,n):
 
 
 
-def boucleJeu(plateau,n) :
+def boucleJeu(n) :
     max=10
     global nb_coup
     while not(verifVictoire(plateau,n)) and nb_coup<=max :
-        if nb_coup==-1 :
-            return nb_coup,"abandonne",plateau
         tl.color("black")
         tl.write((""), font=('arial black', 10))
         global suivant
@@ -420,7 +416,8 @@ def boucleJeu(plateau,n) :
             tl.down()
             tl.write((nb_coup), font=('arial black', 10))
             suivant=False
-   
+        if nb_coup==-1 :
+            return nb_coup,"abandonne",plateau
     if not(verifVictoire(plateau,n)) :
         return nb_coup,"defaite",plateau
     else :
@@ -461,7 +458,6 @@ def annulerDernierCoup(coups,plateau):
     dessineDisque(coups[len(coups)-1][tour_depart][-1],coups[len(coups)-1],n)
     dessineConfig(coups[len(coups)-1],n)
     tl.up()
-    nb_coup-=1
     return copy.deepcopy(coups[len(coups)-1])
     
 
@@ -591,6 +587,7 @@ def buttonClick(x,y):
             nb_coup=-1
         if -500<x<-300 and 140<y<190 :
             plateau=annulerDernierCoup(coups,plateau)
+            print(plateau)
             nb_coup-=1
         if -500<x<-300 and 80<y<130 :
             global scoreopen
@@ -658,7 +655,7 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
     coups[0]=copy.deepcopy(plateau)
     dessineConfig(plateau,n)
     interface()
-    coup,etat,p=boucleJeu(plateau,n)
+    coup,etat,p=boucleJeu(n)
 
 
 
