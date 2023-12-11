@@ -6,7 +6,7 @@ import pickle
 suivant=False
 nb_coup=0
 scoreopen=False
-
+autosolution=False
 
 
 def init(n) :
@@ -435,6 +435,7 @@ def boucleJeu(plateau,n) :
 
 
 def dernierCoup(coups) :
+    print(coups)
     tour_depart=coups[0][0]
     tour_arrivee=coups[1][1]
     dernier_plateau=coups[len(coups)-1]
@@ -569,6 +570,7 @@ def buttonClick(x,y):
     global nb_coup
     global plateau
     global rejouer
+    global autosolution
     if rejouer=="oui" :
         if -500<x<-300 and 200<y<250 :
             nb_coup=-1
@@ -593,6 +595,7 @@ def buttonClick(x,y):
                 tl.up()
                 scoreopen = True
         if -500<x<-300 and 20<y<70 :
+            autosolution=True
             resolutionauto(plateau,n)
         if 300<x<500 and 80<y<130 :
             global suivant
@@ -661,35 +664,37 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
         efface_text(-250,-160)
         print("Partie gagnee apres",coup-1,"coup")
         nom=tl.textinput("Quelle est votre nom ?","nom")
-        sauvScore(nom,n,coup)
-        afficheScore(score)
+        if autosolution==False :
+            sauvScore(nom,n,coup)
+            afficheScore(score)
     if etat=="defaite" :
         print("Partie perdu apres",coup,"coup",coup,"etant le maximum de coup possible")
 
 
-        plateau=p             # on utilise p (le plateau return) qui est dans le fonction boucleJeu 
-        time.sleep(4)
-        effaceTout(plateau, n)  # effacer l'ensemble des disques et le plateau pour pouvoir recommencer une partie
-        tl.color("yellow")
-        laBase_reset(n)
-        poteaux_reset(n)
-        tl.color("black")
-        tl.up()
-        tl.goto(-10000,-80)
-        tl.down()
-        efface_text(-250,-160)
-        tl.up()
-        tl.goto(-150,0)
-        tl.down()
-        tl.write('Veux tu rejouer ?', font=('arial black', 25))
+    plateau=p             # on utilise p (le plateau return) qui est dans le fonction boucleJeu 
+    time.sleep(4)
+    effaceTout(plateau, n)  # effacer l'ensemble des disques et le plateau pour pouvoir recommencer une partie
+    tl.color("yellow")
+    laBase_reset(n)
+    poteaux_reset(n)
+    tl.color("black")
+    tl.up()
+    tl.goto(-10000,-80)
+    tl.down()
+    efface_text(-250,-160)
+    tl.up()
+    tl.goto(-150,0)
+    tl.down()
+    tl.write('Veux tu rejouer ?', font=('arial black', 25))
 
 
-        rejouer=tl.textinput("Veux tu rejouer ?","(oui/non)")
-        efface_text(-160,50)
+    rejouer=tl.textinput("Veux tu rejouer ?","(oui/non)")
+    efface_text(-160,50)
 
 
     dessineConfig([[1,2,3]], 3)
     afficheScore(score)
+    score={}
     with open('score.txt',"wb") as f1:
         pickle.dump(score,f1)
     tl.done()
