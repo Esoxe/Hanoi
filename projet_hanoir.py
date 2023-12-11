@@ -662,7 +662,7 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
 
 
 
-    if etat=="Victoire" :
+    if etat=="Victoire"  and not(autosolution):
         efface_text(-250,-160)
         nom=tl.textinput("Quelle est votre nom ?","nom")
         if autosolution==False :
