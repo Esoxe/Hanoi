@@ -559,7 +559,7 @@ def interface():
     button(0,"ABANDONNER")
     button(1,"ANNULER DERNIER COUP",10)
     button(2,"SCORE")
-    button(2,"COUP SUIVANT",x=300)
+    button(0,"COUP SUIVANT",x=350)
     button(3,"SOLUTION")
 
 def efface_score():
@@ -602,7 +602,7 @@ def buttonClick(x,y):
             if nb_coup == 0 :
                 autosolution=True
                 resolutionauto(plateau,n)
-        if 300<x<500 and 80<y<130 :
+        if 350<x<550 and 200<y<250 :
             global suivant
             suivant=True
 
@@ -673,6 +673,7 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
     tl.color("yellow")
     laBase_reset(n)
     poteaux_reset(n)
+    efface_text(290,-230)
     tl.color("black")
     tl.up()
     tl.goto(-10000,-80)
@@ -682,8 +683,7 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
     tl.goto(-150,0)
     tl.down()
     tl.write('Veux tu rejouer ?', font=('arial black', 25))
-
-
+    interface()
     rejouer=tl.textinput("Veux tu rejouer ?","(oui/non)")
     efface_text(-160,50)
 
