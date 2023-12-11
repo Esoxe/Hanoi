@@ -189,7 +189,7 @@ def dessinePlateau(n):
     tl.bgcolor("yellow")
     tl.up()
     tl.goto(-250,180)
-    tl.write('Les tours de Hanoi:', font=('arial black', 40))
+    tl.write('Les tours de Hanoï', font=('arial black', 40))
     tl.goto(-460,370)
     tl.write('CAILLE Daniel, PERRET Florian ', font=('arial', 15))
     tl.goto(-460,350)
@@ -490,7 +490,7 @@ def affichage_ordre_croissant(score_copy) :
                 if score_copy[partie][2]<score_copy[min][2]:
                     min=partie
             tl.goto(-250,-180-space)
-            tl.write(score_copy[min][0]+"                  "+str(score_copy[min][1])+'                              ' +str(score_copy[min][2]-1), font=('arial black', 12))    
+            tl.write(score_copy[min][0]+"                  "+str(score_copy[min][1])+'                              ' +str(score_copy[min][2]), font=('arial black', 12))    
             del score_copy[min]
             space+=50    
  
@@ -650,15 +650,9 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
     dessineConfig(plateau,n)
     interface()
     coup,etat,p=boucleJeu(plateau,n)
-    if etat=="abandonne" :
-        effaceTout(plateau, n) 
-        tl.color("yellow")
-        laBase_reset(n)
-        poteaux_reset(n)
-        tl.color("black")
-        tl.up()
-        tl.goto(-150,130)
-        tl.write("Partie Terminer",font=("arial black",25))
+
+
+
     if etat=="Victoire" :
         efface_text(-250,-160)
         print("Partie gagnee apres",coup-1,"coup")
@@ -697,7 +691,6 @@ tl.up()
 tl.goto(-150,130)
 tl.write("Partie Terminer",font=("arial black",25))
 afficheScore(score)
-score={}
 with open('score.txt',"wb") as f1:
     pickle.dump(score,f1)
 tl.done()
