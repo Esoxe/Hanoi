@@ -402,22 +402,23 @@ def boucleJeu(plateau,n) :
     while not(verifVictoire(plateau,n)) and nb_coup<=max :
         if nb_coup==-1 :
             return nb_coup,"abandonne",plateau
-        tl.up()
-        tl.goto(300,-250)
-        tl.down()
-        tl.write(("Nombre de coup "), font=('arial black', 10))
-        tl.up()
-        tl.goto(500,-250)
-        tl.down()
-        tl.write((nb_coup), font=('arial black', 10))
-
+        tl.color("black")
+        tl.write((""), font=('arial black', 10))
         global suivant
         test=suivant
         if test :
+            nb_coup+=1
             i=jouerUnCoup(plateau,n)
             coups[nb_coup]=copy.deepcopy(plateau)
-            nb_coup+=1
             efface_text(290,-230)
+            tl.up()
+            tl.goto(300,-250)
+            tl.down()
+            tl.write(("Nombre de coup "), font=('arial black', 10))
+            tl.up()
+            tl.goto(500,-250)
+            tl.down()
+            tl.write((nb_coup), font=('arial black', 10))
             suivant=False
    
     if not(verifVictoire(plateau,n)) :
@@ -435,7 +436,6 @@ def boucleJeu(plateau,n) :
 
 
 def dernierCoup(coups) :
-    print(coups)
     tour_depart=coups[0][0]
     tour_arrivee=coups[1][1]
     dernier_plateau=coups[len(coups)-1]
@@ -461,8 +461,9 @@ def annulerDernierCoup(coups,plateau):
     dessineDisque(coups[len(coups)-1][tour_depart][-1],coups[len(coups)-1],n)
     dessineConfig(coups[len(coups)-1],n)
     tl.up()
+    nb_coup-=1
     return copy.deepcopy(coups[len(coups)-1])
-   
+    
 
 
 
@@ -565,6 +566,20 @@ def interface():
     button(2,"COUP SUIVANT",x=300)
     button(3,"SOLUTION")
 
+def efface_score():
+    tl.up()
+    tl.goto(-250,-350)
+    tl.down()
+    tl.color("yellow")
+    tl.fillcolor("yellow")
+    tl.begin_fill()
+    for i in range (2):
+        tl.forward(350)
+        tl.left(90)
+        tl.forward(200)
+        tl.left(90)
+    tl.end_fill()
+
 def buttonClick(x,y):
     global n
     global nb_coup
@@ -579,24 +594,17 @@ def buttonClick(x,y):
             nb_coup-=1
         if -500<x<-300 and 80<y<130 :
             global scoreopen
-            print(scoreopen)
             if scoreopen :
-                tl.up()
-                tl.goto(-250,-180)
-                tl.down
-                for i in  range(2):
-                    tl.forward(300)
-                    tl.left(90)
-                    tl.forward(300)
-                    tl.left(90)
+                efface_score()
                 scoreopen = False
             else :
                 afficheScore(score)
                 tl.up()
                 scoreopen = True
         if -500<x<-300 and 20<y<70 :
-            autosolution=True
-            resolutionauto(plateau,n)
+            if nb_coup == 0 :
+                autosolution=True
+                resolutionauto(plateau,n)
         if 300<x<500 and 80<y<130 :
             global suivant
             suivant=True
@@ -627,6 +635,7 @@ def resolutionauto(plateau,n) :
         dessineDisque(plateau[arrivee-1][-1],plateau,n)
         tl.speed(1000000)
         dessineConfig(plateau,n)
+    tl.up()
 
 
 
@@ -655,13 +664,10 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
 
     if etat=="Victoire" :
         efface_text(-250,-160)
-        print("Partie gagnee apres",coup-1,"coup")
         nom=tl.textinput("Quelle est votre nom ?","nom")
         if autosolution==False :
             sauvScore(nom,n,coup)
             afficheScore(score)
-    if etat=="defaite" :
-        print("Partie perdu apres",coup,"coup",coup,"etant le maximum de coup possible")
 
 
     plateau=p             # on utilise p (le plateau return) qui est dans le fonction boucleJeu 
