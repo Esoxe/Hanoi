@@ -481,7 +481,7 @@ def affichage_ordre_croissant(score_copy) :
                 if score_copy[partie][2]<score_copy[min][2]:
                     min=partie
             tl.goto(-250,-180-space)
-            tl.write(score_copy[min][0]+"                  "+str(score_copy[min][1])+'                              ' +str(score_copy[min][2]), font=('arial black', 12))    
+            tl.write(score_copy[min][0]+"                  "+str(score_copy[min][1])+'                              ' +str(score_copy[min][2]-1), font=('arial black', 12))    
             del score_copy[min]
             space+=50    
  
@@ -538,7 +538,7 @@ def button(number,buttontxt,font=15,x=-700) :
     tl.goto(x,200-number*60)
     tl.down()
     for i in range(2):
-        tl.fillcolor('brown')
+        tl.fillcolor('purple')
         tl.begin_fill()
         tl.forward(200)
         tl.left(90)
@@ -569,63 +569,64 @@ def buttonClick(x,y):
 
 
 #Programme principal
+def Programme_principal():
 
-scoreopen=False
-tl.setup(1920,1080)
-rejouer="oui"
-with open('score.txt','rb') as f1 :
-    score=pickle.load(f1)
-    tl.onscreenclick(buttonClick,1)
-    tl.listen()
-while rejouer=="oui":  # cette boucle while permet de recommencer une partie
-   
-    score_copy=copy.deepcopy(score)
-    coups={}
-    n=int(tl.numinput("nombre de disque ?","nombre >0 "))
-    while n<=0 :
-        n=int(tl.numinput("nombre de disque ?","nombre > 0 "))
-    plateau=init(n)
-    tl.speed(1000000)
-    coups[0]=copy.deepcopy(plateau)
-    dessineConfig(plateau,n)
-    interface()
-    coup,etat,p=boucleJeu(plateau,n)
-    if etat=="abandonne" :
-        print("Partie abandonne apres",coup,"coups")
-        print("Au revoir")
-    if etat=="Victoire" :
+    scoreopen=False
+    tl.setup(1920,1080)
+    rejouer="oui"
+    with open('score.txt','rb') as f1 :
+        score=pickle.load(f1)
+        tl.onscreenclick(buttonClick,1)
+        tl.listen()
+    while rejouer=="oui":  # cette boucle while permet de recommencer une partie
+    
+        score_copy=copy.deepcopy(score)
+        coups={}
+        n=int(tl.numinput("nombre de disque ?","nombre >0 "))
+        while n<=0 :
+            n=int(tl.numinput("nombre de disque ?","nombre > 0 "))
+        plateau=init(n)
+        tl.speed(1000000)
+        coups[0]=copy.deepcopy(plateau)
+        dessineConfig(plateau,n)
+        interface()
+        coup,etat,p=boucleJeu(plateau,n)
+        if etat=="abandonne" :
+            print("Partie abandonne apres",coup,"coups")
+            print("Au revoir")
+        if etat=="Victoire" :
+            efface_text(-250,-160)
+            print("Partie gagnee apres",coup-1,"coup")
+            nom=tl.textinput("Quelle est votre nom ?","nom")
+            sauvScore(nom,n,coup)
+            afficheScore(score)
+        if etat=="defaite" :
+            print("Partie perdu apres",coup,"coup",coup,"etant le maximum de coup possible")
+
+
+        plateau=p             # on utilise p (le plateau return) qui est dans le fonction boucleJeu 
+        time.sleep(4)
+        effaceTout(plateau, n)  # effacer l'ensemble des disques et le plateau pour pouvoir recommencer une partie
+        tl.color("yellow")
+        laBase_reset(n)
+        poteaux_reset(n)
+        tl.color("black")
+        tl.up()
+        tl.goto(-10000,-80)
+        tl.down()
         efface_text(-250,-160)
-        print("Partie gagnee apres",coup-1,"coup")
-        nom=tl.textinput("Quelle est votre nom ?","nom")
-        sauvScore(nom,n,coup)
-        afficheScore(score)
-    if etat=="defaite" :
-        print("Partie perdu apres",coup,"coup",coup,"etant le maximum de coup possible")
+        tl.up()
+        tl.goto(-150,0)
+        tl.down()
+        tl.write('Veux tu rejouer ?', font=('arial black', 25))
 
 
-    plateau=p
-    time.sleep(4)
-    effaceTout(plateau, n)  # effacer l'ensemble des disques et le plateau pour pouvoir recommencer une partie
-    tl.color("yellow")
-    laBase_reset(n)
-    poteaux_reset(n)
-    tl.color("black")
-    tl.up()
-    tl.goto(-10000,-80)
-    tl.down()
-    efface_text(-250,-160)
-    tl.up()
-    tl.goto(-150,0)
-    tl.down()
-    tl.write('Veux tu rejouer ?', font=('arial black', 25))
+        rejouer=tl.textinput("Veux tu rejouer ?","(oui/non)")
+        efface_text(-160,50)
 
 
-    rejouer=tl.textinput("Veux tu rejouer ?","(oui/non)")
-    efface_text(-160,50)
-
-
-dessineConfig([[1,2,3]], 3)
-afficheScore(score)
-with open('score.txt',"wb") as f1:
-    pickle.dump(score,f1)
-tl.done()
+    dessineConfig([[1,2,3]], 3)
+    afficheScore(score)
+    with open('score.txt',"wb") as f1:
+        pickle.dump(score,f1)
+    tl.done()
