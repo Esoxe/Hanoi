@@ -1,7 +1,11 @@
-import keyboard as kb
 import copy
 import time
 import pickle
+
+#Variable globales 
+suivant=False
+nb_coup=0
+scoreopen=False
 
 
 
@@ -393,25 +397,28 @@ def jouerUnCoup(plateau,n):
 
 
 def boucleJeu(plateau,n) :
-    nb_coup=1
     max=10
+    global nb_coup
     while not(verifVictoire(plateau,n)) and nb_coup<=max :
+        if nb_coup==-1 :
+            return nb_coup,"abandonne",plateau
         tl.up()
         tl.goto(300,-250)
         tl.down()
-        tl.write(("Coup Numero ",nb_coup), font=('arial black', 10))
+        tl.write(("Nombre de coup "), font=('arial black', 10))
+        tl.up()
+        tl.goto(500,-250)
+        tl.down()
+        tl.write((nb_coup), font=('arial black', 10))
 
-
-        i=jouerUnCoup(plateau,n)
-        if i==-1 :
-            return nb_coup,"abandonne",plateau
-        coups[nb_coup]=copy.deepcopy(plateau)
-        nb_coup+=1
-        annuler=tl.textinput("Voulez vous annuler le dernier coup ?"," (oui/non) ")
-        if annuler=='oui':
-                plateau=annulerDernierCoup(coups,plateau)
-                nb_coup-=1
-        efface_text(290,-230)
+        global suivant
+        test=suivant
+        if test :
+            i=jouerUnCoup(plateau,n)
+            coups[nb_coup]=copy.deepcopy(plateau)
+            nb_coup+=1
+            efface_text(290,-230)
+            suivant=False
    
     if not(verifVictoire(plateau,n)) :
         return nb_coup,"defaite",plateau
@@ -452,6 +459,7 @@ def annulerDernierCoup(coups,plateau):
     del coups[len(coups)-1]
     dessineDisque(coups[len(coups)-1][tour_depart][-1],coups[len(coups)-1],n)
     dessineConfig(coups[len(coups)-1],n)
+    tl.up()
     return copy.deepcopy(coups[len(coups)-1])
    
 
@@ -533,7 +541,7 @@ def efface_text(x,y):
     tl.goto(-1000,-160)
     tl.down()
 
-def button(number,buttontxt,font=15,x=-700) :
+def button(number,buttontxt,font=15,x=-500) :
     tl.up()
     tl.goto(x,200-number*60)
     tl.down()
@@ -557,17 +565,38 @@ def interface():
     button(3,"SOLUTION")
 
 def buttonClick(x,y):
-    if -700<x<-500 and 200<y<250 :
-        print("abandonne")
-    if -700<x<-500 and 80<y<130 :
-        global scoreopen
-        if scoreopen :
-            efface_text(-250,-160)
-            scoreopen = False
-        else :
-            afficheScore(score)
-            scoreopen = True
-
+    global n
+    global nb_coup
+    global plateau
+    global rejouer
+    if rejouer=="oui" :
+        if -500<x<-300 and 200<y<250 :
+            nb_coup=-1
+        if -500<x<-300 and 140<y<190 :
+            plateau=annulerDernierCoup(coups,plateau)
+            nb_coup-=1
+        if -500<x<-300 and 80<y<130 :
+            global scoreopen
+            print(scoreopen)
+            if scoreopen :
+                tl.up()
+                tl.goto(-250,-180)
+                tl.down
+                for i in  range(2):
+                    tl.forward(300)
+                    tl.left(90)
+                    tl.forward(300)
+                    tl.left(90)
+                scoreopen = False
+            else :
+                afficheScore(score)
+                tl.up()
+                scoreopen = True
+        if -500<x<-300 and 20<y<70 :
+            resolutionauto(plateau,n)
+        if 300<x<500 and 80<y<130 :
+            global suivant
+            suivant=True
 
 #Partie F
 
@@ -586,9 +615,7 @@ def hanoi(n, source, target, auxiliary, moves=[]):
 
 
 def resolutionauto(plateau,n) :
-    nb_coups=0
     mouvements=hanoi(n,1,3,2)
-    print(mouvements)
     for depart,arrivee in mouvements :
         print(depart,arrivee)
         effaceDisque(plateau[depart-1][-1],plateau,n)
@@ -599,33 +626,37 @@ def resolutionauto(plateau,n) :
         dessineConfig(plateau,n)
 
 
-scoreopen=False
-#Programme principal
-def Programme_principal():
 
-scoreopen=False
+#Programme principal
 tl.setup(1920,1080)
 rejouer="oui"
 with open('score.txt','rb') as f1 :
     score=pickle.load(f1)
-    tl.onscreenclick(buttonClick,1)
-    tl.listen()
 while rejouer=="oui":  # cette boucle while permet de recommencer une partie
-   
+
     score_copy=copy.deepcopy(score)
     coups={}
     n=int(tl.numinput("nombre de disque ?","nombre >0 "))
     while n<=0 :
         n=int(tl.numinput("nombre de disque ?","nombre > 0 "))
     plateau=init(n)
+    tl.onscreenclick(buttonClick,1)
+    tl.listen()
     tl.speed(1000000)
     coups[0]=copy.deepcopy(plateau)
     dessineConfig(plateau,n)
     interface()
     coup,etat,p=boucleJeu(plateau,n)
     if etat=="abandonne" :
-        print("Partie abandonne apres",coup,"coups")
-        print("Au revoir")
+        rejouer="non"
+        effaceTout(plateau, n) 
+        tl.color("yellow")
+        laBase_reset(n)
+        poteaux_reset(n)
+        tl.color("black")
+        tl.up()
+        tl.goto(-150,130)
+        tl.write("Partie Terminer",font=("arial black",25))
     if etat=="Victoire" :
         efface_text(-250,-160)
         print("Partie gagnee apres",coup-1,"coup")
