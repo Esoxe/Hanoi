@@ -334,7 +334,7 @@ def effaceTout(plateau, n):
 
 #1)
 def lireCoords(plateau):
-    n_tour_depart=int(tl.numinput("Numero de tour de départ ?","Entre 1 et 3"))
+    n_tour_depart=int(tl.numinput("départ ?","Entre 1 et 3"))
     test=False
     while not(test)  :
         if n_tour_depart ==-1:
@@ -342,7 +342,7 @@ def lireCoords(plateau):
             if sur== "oui" :
                 return -1,None
             else :
-                n_tour_depart=int(tl.numinput("Numero de tour de départ ?","Entre 1 et 3"))
+                n_tour_depart=int(tl.numinput("départ ?","Entre 1 et 3"))
         elif 0<n_tour_depart<4 :
             if len(plateau[n_tour_depart-1])!=0:
                 for i in range(len(plateau)):
@@ -351,25 +351,25 @@ def lireCoords(plateau):
                            test=True
                 if test==False :
                     print("Aucun deplacement possible a partir de cette tour choissier en une autre")          
-                    n_tour_depart=int(tl.numinput("Numero de tour de départ ?","Entre 1 et 3"))                               
+                    n_tour_depart=int(tl.numinput("départ ?","Entre 1 et 3"))                               
             else :
                 print("La tour numéro ",n_tour_depart,"est vide choissiser en une autre. ")
-                n_tour_depart=int(tl.numinput("Numero de tour de départ ?","Entre 1 et 3"))
+                n_tour_depart=int(tl.numinput("départ ?","Entre 1 et 3"))
         else :
-            n_tour_depart=int(tl.numinput("Numero de tour de départ ?","Entre 1 et 3"))
+            n_tour_depart=int(tl.numinput("départ ?","Entre 1 et 3"))
         if test==True :
             test2=False
-            n_tour_arrivee=int(tl.numinput("Numero de la tour d'arrivee ? :","entre 1 et 3"))
+            n_tour_arrivee=int(tl.numinput("arrivee ? :","entre 1 et 3"))
             while not(test2)  :
                 if 0<n_tour_arrivee<4 :
                     test2=verifDepl(plateau,n_tour_depart-1,n_tour_arrivee-1)
                     if test2==False :
                         print("Deplacement impossible disque plus petit déja present sur cette tour")
                         test2==True
-                        n_tour_depart=int(tl.numinput("Numero de tour de départ ?","Entre 1 et 3"))
-                        n_tour_arrivee=int(tl.numinput("Numero de la tour d'arrivee ? :","entre 1 et 3"))
+                        n_tour_depart=int(tl.numinput("départ ?","Entre 1 et 3"))
+                        n_tour_arrivee=int(tl.numinput("arrivee ? :","entre 1 et 3"))
                 else :
-                 n_tour_arrivee=int(tl.numinput("Numero de la tour d'arrivee ? :","entre 1 et 3"))
+                 n_tour_arrivee=int(tl.numinput("arrivee ? :","entre 1 et 3"))
     return n_tour_depart,n_tour_arrivee
 
 
@@ -574,7 +574,7 @@ def efface_score():
     tl.fillcolor("yellow")
     tl.begin_fill()
     for i in range (2):
-        tl.forward(350)
+        tl.forward(360)
         tl.left(90)
         tl.forward(200)
         tl.left(90)
@@ -671,7 +671,7 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
 
 
     plateau=p             # on utilise p (le plateau return) qui est dans le fonction boucleJeu 
-    time.sleep(4)
+    time.sleep(2)
     effaceTout(plateau, n)  # effacer l'ensemble des disques et le plateau pour pouvoir recommencer une partie
     tl.color("yellow")
     laBase_reset(n)
