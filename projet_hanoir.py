@@ -636,7 +636,7 @@ rejouer="oui"
 with open('score.txt','rb') as f1 :
     score=pickle.load(f1)
 while rejouer=="oui":  # cette boucle while permet de recommencer une partie
-
+    nb_coup=0
     score_copy=copy.deepcopy(score)
     coups={}
     n=int(tl.numinput("nombre de disque ?","nombre >0 "))
@@ -651,7 +651,6 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
     interface()
     coup,etat,p=boucleJeu(plateau,n)
     if etat=="abandonne" :
-        rejouer="non"
         effaceTout(plateau, n) 
         tl.color("yellow")
         laBase_reset(n)
@@ -692,9 +691,13 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
     efface_text(-160,50)
 
 
-    dessineConfig([[1,2,3]], 3)
-    afficheScore(score)
-    score={}
-    with open('score.txt',"wb") as f1:
-        pickle.dump(score,f1)
-    tl.done()
+dessineConfig([[1,2,3]], 3)
+tl.color("black")
+tl.up()
+tl.goto(-150,130)
+tl.write("Partie Terminer",font=("arial black",25))
+afficheScore(score)
+score={}
+with open('score.txt',"wb") as f1:
+    pickle.dump(score,f1)
+tl.done()
