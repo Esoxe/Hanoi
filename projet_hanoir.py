@@ -554,6 +554,7 @@ def interface():
     button(1,"ANNULER DERNIER COUP",10)
     button(2,"SCORE")
     button(2,"COUP SUIVANT",x=300)
+    button(3,"SOLUTION")
 
 def buttonClick(x,y):
     if -700<x<-500 and 200<y<250 :
@@ -568,9 +569,39 @@ def buttonClick(x,y):
             scoreopen = True
 
 
-#Programme principal
+#Partie F
+
+def hanoi(n, source, target, auxiliary, moves=[]):
+    if n > 0:
+        # Déplacer n-1 disques de la source vers le poteau auxiliaire
+        hanoi(n-1, source, auxiliary, target, moves)
+        
+        # Déplacer le n-ème disque de la source vers la cible
+        moves.append((source, target))
+        
+        # Déplacer les n-1 disques du poteau auxiliaire vers la cible
+        hanoi(n-1, auxiliary, target, source, moves)
+
+    return moves
+
+
+def resolutionauto(plateau,n) :
+    nb_coups=0
+    mouvements=hanoi(n,1,3,2)
+    print(mouvements)
+    for depart,arrivee in mouvements :
+        print(depart,arrivee)
+        effaceDisque(plateau[depart-1][-1],plateau,n)
+        plateau[arrivee-1].append(plateau[depart-1][-1])
+        del plateau[depart-1][-1]
+        dessineDisque(plateau[arrivee-1][-1],plateau,n)
+        tl.speed(1000000)
+        dessineConfig(plateau,n)
+
 
 scoreopen=False
+#Programme principal
+
 tl.setup(1920,1080)
 rejouer="oui"
 with open('score.txt','rb') as f1 :
@@ -589,6 +620,7 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
     coups[0]=copy.deepcopy(plateau)
     dessineConfig(plateau,n)
     interface()
+    resolutionauto(plateau,n)
     coup,etat,p=boucleJeu(plateau,n)
     if etat=="abandonne" :
         print("Partie abandonne apres",coup,"coups")
