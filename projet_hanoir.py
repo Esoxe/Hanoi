@@ -1,12 +1,15 @@
 import copy
 import time
 import pickle
+import datetime
 
 #Variable globales 
 suivant=False
 nb_coup=0
 scoreopen=False
 autosolution=False
+tempsopen=False
+reflexionopen=False
 
 
 def init(n) :
@@ -469,8 +472,8 @@ def annulerDernierCoup(coups,plateau):
 
 
 
-def sauvScore(nom,n,nb_coup) :
-    score[len(score)+1]=[nom,n,nb_coup]
+def sauvScore(nom,n,nb_coup,date,timer) :
+    score[len(score)+1]=[nom,n,nb_coup,date,timer]
 
 
 
@@ -487,7 +490,7 @@ def affichage_ordre_croissant(score_copy) :
                 if score_copy[partie][2]<score_copy[min][2]:
                     min=partie
             tl.goto(-250,-180-space)
-            tl.write(score_copy[min][0]+"                  "+str(score_copy[min][1])+'                              ' +str(score_copy[min][2]), font=('arial black', 12))    
+            tl.write(score_copy[min][0]+"                  "+str(score_copy[min][1])+'                          ' +str(score_copy[min][2])+'               '+str(score_copy[min][3]), font=('arial black', 12))    
             del score_copy[min]
             space+=50    
  
@@ -498,7 +501,7 @@ def afficheScore(score,n=0):
         space=50
         tl.up()
         tl.goto(-250,-180)
-        tl.write('NOM        NOMBRE DE DISQUE    NOMBRE DE COUP ', font=('arial black', 10))
+        tl.write('NOM        NOMBRE DE DISQUE    NOMBRE DE COUP          DATE', font=('arial black', 10))
         if n==0:
             if len(score)>3 :
                 for i in range(0,3) :
@@ -518,9 +521,83 @@ def afficheScore(score,n=0):
             affichage_ordre_croissant(score_copy)
         tl.down()
 
+def affichage_ordre_croissant_Temps(score_copy):
+    space=50
+    for i in range(len(score_copy)) :
+            min=list(score_copy.keys())[0]
+            for partie in score_copy :
+                if score_copy[partie][2]<score_copy[min][2]:
+                    min=partie
+            tl.goto(-250,-180-space)
+            tl.write(score_copy[min][0]+"                "+str(score_copy[min][1])+'                 ' +str(score_copy[min][4])+'             '+str(score_copy[min][3]), font=('arial black', 12))    
+            del score_copy[min]
+            space+=50  
 
 
+def afficheChronos(score,n=0):
+    if len(score)!=0 :
+        score_copy=copy.deepcopy(score)
+        meilleur_score_3={}
+        space=50
+        tl.up()
+        tl.goto(-250,-180)
+        tl.write('NOM        NOMBRE DE DISQUE    TEMPS(s)                DATE', font=('arial black', 10))
+        if n==0:
+            if len(score)>3 :
+                for i in range(0,3) :
+                    min=list(score_copy.keys())[0]
+                    for partie in score_copy:
+                        if score_copy[partie][4]<score_copy[min][4] :
+                            min=partie
+                    meilleur_score_3[i]=score_copy[min]
+                    del score_copy[min]
+                affichage_ordre_croissant_Temps(meilleur_score_3)
+            else :
+                affichage_ordre_croissant_Temps(score_copy)    
+        else :
+            for i in range(1,len(score)+1) :
+                if score_copy[i][1]!=n:
+                    del score_copy[i]
+            affichage_ordre_croissant_Temps(score_copy)
+        tl.down()
 
+def reflexionMoy():
+    liste_noms=[]
+    temps_moyen={}
+    somme_coups=0
+    somme_temps=0
+    
+    if len(score)!=0 :
+        for partie in score :
+            if not(score[partie][0] in liste_noms) :
+                liste_noms.append(score[partie][0])
+        for nom in liste_noms :
+            somme_coups=0
+            somme_temps=0
+            for partie in score :
+                if score[partie][0]==nom :
+                    somme_coups+=score[partie][2]
+                    somme_temps+=score[partie][4]
+            temps_moyen[nom]=somme_temps/somme_coups
+        affichage_joueurs_vitesse(temps_moyen)
+
+def affichage_joueurs_vitesse(temps_moyen) :
+    tl.up()
+    tl.goto(-250,-180)
+    tl.write('NOM        TEMPS REFLEXION PAR COUP', font=('arial black', 10))
+    temps_moyen_copy=dict(temps_moyen)
+    space=50
+    i=0
+    while i<3 and i<len(temps_moyen) :
+            min=list(temps_moyen_copy.keys())[0]
+            for nom in temps_moyen_copy :
+                if temps_moyen[nom]<temps_moyen[min] :
+                    min=nom
+            tl.goto(-250,-180-space)
+            tl.write(min+"                "+str(temps_moyen_copy[min]), font=('arial black', 12))    
+            del temps_moyen_copy[min]
+            space+=50  
+            i+=1
 
 
 def efface_text(x,y):
@@ -531,7 +608,7 @@ def efface_text(x,y):
     tl.fillcolor("yellow")
     tl.begin_fill()
     for i in range(4):
-        tl.forward(400)
+        tl.forward(500)
         tl.right(90)
     tl.end_fill()
     tl.color("black")
@@ -539,7 +616,7 @@ def efface_text(x,y):
     tl.goto(-1000,-160)
     tl.down()
 
-def button(number,buttontxt,font=15,x=-500) :
+def button(number,buttontxt,font=15,x=-550) :
     tl.up()
     tl.goto(x,200-number*60)
     tl.down()
@@ -561,6 +638,8 @@ def interface():
     button(2,"SCORE")
     button(0,"COUP SUIVANT",x=350)
     button(3,"SOLUTION")
+    button(4,"CLASSEMENT TEMPS",11)
+    button(5,"MOYEN REFLEXION",11)
 
 def efface_score():
     tl.up()
@@ -570,7 +649,7 @@ def efface_score():
     tl.fillcolor("yellow")
     tl.begin_fill()
     for i in range (2):
-        tl.forward(360)
+        tl.forward(500)
         tl.left(90)
         tl.forward(200)
         tl.left(90)
@@ -582,29 +661,68 @@ def buttonClick(x,y):
     global plateau
     global rejouer
     global autosolution
+    global tempsopen
+    global reflexionopen
     if rejouer=="oui" :
-        if -500<x<-300 and 200<y<250 :
+        if -550<x<-250 and 200<y<250 :
             nb_coup=-1
-        if -500<x<-300 and 140<y<190 :
+        if -550<x<-250 and 140<y<190 :
             plateau=annulerDernierCoup(coups,plateau)
-            print(plateau)
             nb_coup-=1
-        if -500<x<-300 and 80<y<130 :
+            efface_text(290,-230)
+            tl.up()
+            tl.goto(300,-250)
+            tl.down()
+            tl.write(("Nombre de coup "), font=('arial black', 10))
+            tl.up()
+            tl.goto(500,-250)
+            tl.down()
+            tl.write((nb_coup), font=('arial black', 10))
+            tl.up()
+        if -550<x<-250 and 80<y<130 :
             global scoreopen
             if scoreopen :
                 efface_score()
                 scoreopen = False
             else :
+                efface_score()
+                tl.color("black")
                 afficheScore(score)
                 tl.up()
                 scoreopen = True
-        if -500<x<-300 and 20<y<70 :
+                tempsopen=False
+                reflexionopen=False
+        if -550<x<-250 and 20<y<70 :
             if nb_coup == 0 :
                 autosolution=True
                 resolutionauto(plateau,n)
         if 350<x<550 and 200<y<250 :
             global suivant
             suivant=True
+        if -550<x<-250 and -40<y<10 :
+            if tempsopen :
+                efface_score()
+                tempsopen=False
+            else:
+                efface_score()
+                tl.color("black")
+                afficheChronos(score)
+                tl.up()
+                tempsopen=True
+                scoreopen=False
+                reflexionopen=False
+        if -550<x<-250 and -100<y<-50 :
+            if reflexionopen :
+                efface_score()
+                reflexionopen=False
+            else:
+                efface_score()
+                tl.color("black")
+                reflexionMoy()
+                tl.up()
+                reflexionopen=True
+                scoreopen=False
+                tempsopen=False
 
 #Partie F
 
@@ -625,7 +743,6 @@ def hanoi(n, source, target, auxiliary, moves=[]):
 def resolutionauto(plateau,n) :
     mouvements=hanoi(n,1,3,2)
     for depart,arrivee in mouvements :
-        print(depart,arrivee)
         effaceDisque(plateau[depart-1][-1],plateau,n)
         plateau[arrivee-1].append(plateau[depart-1][-1])
         del plateau[depart-1][-1]
@@ -648,6 +765,8 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
     n=int(tl.numinput("nombre de disque ?","nombre >0 "))
     while n<=0 :
         n=int(tl.numinput("nombre de disque ?","nombre > 0 "))
+    timer1=time.time()
+    
     plateau=init(n)
     tl.onscreenclick(buttonClick,1)
     tl.listen()
@@ -660,10 +779,11 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
 
 
     if etat=="Victoire"  and not(autosolution):
+        temps=round(time.time()-timer1,1)
         efface_text(-250,-160)
         nom=tl.textinput("Quelle est votre nom ?","nom")
         if autosolution==False :
-            sauvScore(nom,n,coup)
+            sauvScore(nom,n,coup,datetime.date.today(),temps)
             afficheScore(score)
 
 
@@ -688,7 +808,7 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
     efface_text(-160,50)
 
 
-dessineConfig([[1,2,3]], 3)
+dessineConfig([[1,2,3,4,5]], 5)
 tl.color("black")
 tl.up()
 tl.goto(-150,130)
