@@ -4,13 +4,15 @@ import pickle
 import datetime
 
 #Variable globales 
-suivant=False
+suivant=False #Variable qui active le coup suivant
 nb_coup=0
-scoreopen=False
-autosolution=False
-tempsopen=False
-reflexionopen=False
+scoreopen=False #Ouverture ou non de la fenetre score
+autosolution=False #Solution automatique utiliser ou non
+tempsopen=False #Ouverture ou non de la fenetre classement temps
+reflexionopen=False #Ouverture ou non de la fenetre reflexion moyenne
 
+
+#Partie A : plateau de jeu et Listes
 
 def init(n) :
     plateau=[[],[],[]]
@@ -581,7 +583,7 @@ def reflexionMoy():
             temps_moyen[nom]=somme_temps/somme_coups
         affichage_joueurs_vitesse(temps_moyen)
 
-def affichage_joueurs_vitesse(temps_moyen) :
+def affichage_joueurs_vitesse(temps_moyen) : #Affichage clasement temps de jeu par coups
     tl.up()
     tl.goto(-250,-180)
     tl.write('NOM        TEMPS REFLEXION PAR COUP', font=('arial black', 10))
@@ -600,7 +602,7 @@ def affichage_joueurs_vitesse(temps_moyen) :
             i+=1
 
 
-def efface_text(x,y):
+def efface_text(x,y): #Efface un texte a la position x,y
     tl.up()
     tl.goto(x,y)
     tl.down()
@@ -616,7 +618,7 @@ def efface_text(x,y):
     tl.goto(-1000,-160)
     tl.down()
 
-def button(number,buttontxt,font=15,x=-550) :
+def button(number,buttontxt,font=15,x=-550) : #Permet l'affichage d'un bouton avec comme parametre hauteur,snom,taille,position
     tl.up()
     tl.goto(x,200-number*60)
     tl.down()
@@ -632,16 +634,16 @@ def button(number,buttontxt,font=15,x=-550) :
     tl.goto(x+10,210-number*60)
     tl.write(buttontxt,font=('arial black',font))
 
-def interface():
+def interface(): #Affichage de l'emsemble des boutons de l'interface
     button(0,"ABANDONNER")
     button(1,"ANNULER DERNIER COUP",10)
     button(2,"SCORE")
     button(0,"COUP SUIVANT",x=350)
     button(3,"SOLUTION")
     button(4,"CLASSEMENT TEMPS",11)
-    button(5,"MOYEN REFLEXION",11)
+    button(5,"REFLEXION MOYENNE",11)
 
-def efface_score():
+def efface_score(): #Efface l'afficage du score
     tl.up()
     tl.goto(-250,-350)
     tl.down()
@@ -655,7 +657,7 @@ def efface_score():
         tl.left(90)
     tl.end_fill()
 
-def buttonClick(x,y):
+def buttonClick(x,y): #liée a l'evenement onscreenClick elle permet de gerer les cliques de l'utilisateur sur les différents boutons de l'interface
     global n
     global nb_coup
     global plateau
@@ -663,10 +665,10 @@ def buttonClick(x,y):
     global autosolution
     global tempsopen
     global reflexionopen
-    if rejouer=="oui" :
-        if -550<x<-250 and 200<y<250 :
+    if rejouer=="oui" : 
+        if -550<x<-250 and 200<y<250 : #Bouton Abandon
             nb_coup=-1
-        if -550<x<-250 and 140<y<190 :
+        if -550<x<-250 and 140<y<190 : #Bouton annulerDernierCoup
             plateau=annulerDernierCoup(coups,plateau)
             nb_coup-=1
             efface_text(290,-230)
@@ -679,7 +681,7 @@ def buttonClick(x,y):
             tl.down()
             tl.write((nb_coup), font=('arial black', 10))
             tl.up()
-        if -550<x<-250 and 80<y<130 :
+        if -550<x<-250 and 80<y<130 : #Bouton Score
             global scoreopen
             if scoreopen :
                 efface_score()
@@ -692,14 +694,14 @@ def buttonClick(x,y):
                 scoreopen = True
                 tempsopen=False
                 reflexionopen=False
-        if -550<x<-250 and 20<y<70 :
+        if -550<x<-250 and 20<y<70 : #Bouton solution
             if nb_coup == 0 :
                 autosolution=True
                 resolutionauto(plateau,n)
-        if 350<x<550 and 200<y<250 :
+        if 350<x<550 and 200<y<250 :  #Bouton Coup suivant
             global suivant
             suivant=True
-        if -550<x<-250 and -40<y<10 :
+        if -550<x<-250 and -40<y<10 : #Bouton classement temps
             if tempsopen :
                 efface_score()
                 tempsopen=False
@@ -711,7 +713,7 @@ def buttonClick(x,y):
                 tempsopen=True
                 scoreopen=False
                 reflexionopen=False
-        if -550<x<-250 and -100<y<-50 :
+        if -550<x<-250 and -100<y<-50 : #Bouton reflexion moyenne
             if reflexionopen :
                 efface_score()
                 reflexionopen=False
@@ -740,7 +742,7 @@ def hanoi(n, source, target, auxiliary, moves=[]):
     return moves
 
 
-def resolutionauto(plateau,n) :
+def resolutionauto(plateau,n) : #Animation de la solution automatique par la fonction hanoi, dans turtle
     mouvements=hanoi(n,1,3,2)
     for depart,arrivee in mouvements :
         effaceDisque(plateau[depart-1][-1],plateau,n)
@@ -756,7 +758,7 @@ def resolutionauto(plateau,n) :
 #Programme principal
 tl.setup(1920,1080)
 rejouer="oui"
-with open('score.txt','rb') as f1 :
+with open('score.txt','rb') as f1 : #Recuperation des scores déja enregistré
     score=pickle.load(f1)
 while rejouer=="oui":  # cette boucle while permet de recommencer une partie
     nb_coup=0
@@ -768,7 +770,7 @@ while rejouer=="oui":  # cette boucle while permet de recommencer une partie
     timer1=time.time()
     
     plateau=init(n)
-    tl.onscreenclick(buttonClick,1)
+    tl.onscreenclick(buttonClick,1) #Gestion des cliques
     tl.listen()
     tl.speed(1000000)
     coups[0]=copy.deepcopy(plateau)
@@ -814,6 +816,6 @@ tl.up()
 tl.goto(-150,130)
 tl.write("Partie Terminer",font=("arial black",25))
 afficheScore(score)
-with open('score.txt',"wb") as f1:
+with open('score.txt',"wb") as f1: #Enregistre les valeurs des nouvelles parties dans le fichier
     pickle.dump(score,f1)
 tl.done()
